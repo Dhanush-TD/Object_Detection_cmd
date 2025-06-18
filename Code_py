@@ -1,0 +1,37 @@
+import streamlit as st
+import cv2
+import torch
+from PIL import Image
+import numpy as np
+
+# Load YOLOv5 model
+model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+
+st.title("Real-Time Object Detection")
+run = st.checkbox('Start Camera')
+
+FRAME_WINDOW = st.image([])
+
+# Start video stream
+cap = cv2.VideoCapture(0)
+
+while run:
+    ret, frame = cap.read()
+    if not ret:
+        st.warning("Failed to grab frame")
+        break
+
+    # Convert frame to RGB
+    img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+    # Inference
+    results = model(img)
+
+    # Render results on frame
+    results.render()
+    result_frame = results.ims[0]
+
+    # Display frame
+    FRAME_WINDOW.image(result_frame)
+
+cap.release()
