@@ -1,0 +1,3 @@
+#add the location of your python file & name here
+cd C:\Users\dhanu
+streamlit run app.py
